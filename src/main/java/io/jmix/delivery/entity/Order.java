@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "ORDER_")
+@Table(name = "ORDER_", indexes = {
+        @Index(name = "IDX_ORDER__CLIENT", columnList = "CLIENT_ID")
+})
 @Entity(name = "Order_")
 public class Order {
     @JmixGeneratedValue
@@ -30,6 +32,11 @@ public class Order {
     @OneToMany(mappedBy = "order")
     @OnDelete(DeletePolicy.CASCADE)
     private List<FoodCountItem> foodItems;
+
+    @OnDelete(DeletePolicy.UNLINK)
+    @JoinColumn(name = "CLIENT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User client;
 
     @CreatedBy
     @Column(name = "CREATED_BY")
@@ -58,6 +65,14 @@ public class Order {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
 
     public List<FoodCountItem> getFoodItems() {
         return foodItems;
