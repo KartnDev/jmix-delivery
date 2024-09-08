@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://restaurantDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="restaurantDc"
+                  class="io.jmix.delivery.entity.Restaurant">
+            <fetchPlan extends="_base">
+                <property name="owners" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="restaurantDl"/>
+            <collection id="ownersDc" property="owners"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="restaurantDc">
+            <textField id="nameField" property="name"/>
+            <fileUploadField id="iconField" clearButtonVisible="true" fileNameVisible="true" property="icon"/>
+            <textField id="descriptionField" property="description"/>
+        </formLayout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button action="ownersDataGrid.add"/>
+            <button action="ownersDataGrid.exclude"/>
+        </hbox>
+        <dataGrid id="ownersDataGrid" dataContainer="ownersDc" width="100%" height="100%">
+            <actions>
+                <action id="add" type="list_add"/>
+                <action id="exclude" type="list_exclude"/>
+            </actions>
+            <columns>
+                <column property="version"/>
+                <column property="username"/>
+                <column property="password"/>
+                <column property="firstName"/>
+                <column property="lastName"/>
+                <column property="email"/>
+                <column property="active"/>
+                <column property="timeZoneId"/>
+            </columns>
+        </dataGrid>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
