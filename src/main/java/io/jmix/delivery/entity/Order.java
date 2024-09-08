@@ -8,6 +8,7 @@ import io.jmix.core.entity.annotation.OnDelete;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
+import org.eclipse.persistence.indirection.IndirectList;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -32,7 +33,7 @@ public class Order {
     @OnDeleteInverse(DeletePolicy.DENY)
     @OneToMany(mappedBy = "order")
     @OnDelete(DeletePolicy.CASCADE)
-    private List<FoodCountItem> foodItems;
+    private List<FoodCountItem> foodItems = new IndirectList<>();
 
     @OnDelete(DeletePolicy.UNLINK)
     @JoinColumn(name = "CLIENT_ID")

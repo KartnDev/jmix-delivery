@@ -6,8 +6,10 @@ import io.jmix.core.annotation.DeletedDate;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -22,7 +24,7 @@ import java.util.UUID;
         @Index(name = "IDX_FOOD_COUNT_ITEM_ORDER", columnList = "ORDER_ID")
 })
 @Entity
-public class FoodCountItem {
+public class FoodCountItem implements HasIconEntity {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
@@ -33,6 +35,10 @@ public class FoodCountItem {
     @JoinColumn(name = "FOOD_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Food food;
+
+    @Positive(message = "{msg://io.jmix.delivery.entity/FoodCountItem.count.validation.Positive}")
+    @Column(name = "COUNT_")
+    private Integer count;
 
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "ORDER_ID")
@@ -66,6 +72,14 @@ public class FoodCountItem {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 
     public OffsetDateTime getDeletedDate() {
         return deletedDate;
@@ -145,5 +159,17 @@ public class FoodCountItem {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    @Nullable
+    @Override
+    public byte[] getIcon() {
+        return food.getIcon();
+    }
+
+    @Nullable
+    @Override
+    public String getIconName() {
+        return food.getIconName();
     }
 }
