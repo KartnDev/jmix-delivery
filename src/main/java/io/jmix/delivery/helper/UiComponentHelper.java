@@ -43,9 +43,9 @@ public final class UiComponentHelper {
         return avatar;
     }
 
-    public <T extends HasIconEntity> void addListRenderer(HasComponents rootAttachComponent,
-                                                          CollectionContainer<T> collectionContainer,
-                                                          BiConsumer<HasIconEntity, ListComponentContext> infoLayoutUpdater) {
+    public <T extends HasIconEntity> void addVirtualList(HasComponents rootAttachComponent,
+                                                         CollectionContainer<T> collectionContainer,
+                                                         BiConsumer<HasIconEntity, ListComponentContext> infoLayoutUpdater) {
         rootAttachComponent.removeAll();
         var tVirtualList = new VirtualList<T>();
         tVirtualList.setWidthFull();
@@ -66,13 +66,14 @@ public final class UiComponentHelper {
 
             rootCardLayout.add(avatar, infoLayout);
 
-            infoLayoutUpdater.accept(item, new ListComponentContext(rootCardLayout, infoLayout));
+            infoLayoutUpdater.accept(item, new ListComponentContext(rootCardLayout, infoLayout, tVirtualList));
 
             return rootCardLayout;
         }));
         rootAttachComponent.add(tVirtualList);
     }
 
-    public record ListComponentContext(HorizontalLayout rootLayout, VerticalLayout infoLayout) {
+    public record ListComponentContext(HorizontalLayout rootCardLayout, VerticalLayout infoLayout, VirtualList tVirtualList) {
+
     }
 }

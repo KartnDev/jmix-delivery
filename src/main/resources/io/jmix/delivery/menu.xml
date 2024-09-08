@@ -3,9 +3,10 @@
 
     <menu id="application" title="msg://io.jmix.delivery/menu.application.title" opened="true">
         <item view="User.list" title="msg://io.jmix.delivery.view.user/UserListView.title"/>
-        <item view="Restaurant.list" title="msg://io.jmix.delivery.view.restaurant/restaurantListView.title"/>
+        <item view="Restaurant.list" title="msg://io.jmix.delivery.view.systemrestaurant/restaurantDetailView.title"/>
         <item view="OrderChooseRestaurantView"
-              title="msg://io.jmix.delivery.view.orderchooserestaurant/startOrder.title"/>
+              title="msg://io.jmix.delivery.view.order/startOrder.title"/>
+        <item view="MyRestaurant.list" title="msg://io.jmix.delivery.view.restaurant/myRestaurantListView.title"/>
     </menu>
 
 </menu-config>
