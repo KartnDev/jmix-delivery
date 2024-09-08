@@ -34,6 +34,11 @@ public class FoodCountItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Food food;
 
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "ORDER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+
     @CreatedBy
     @Column(name = "CREATED_BY")
     private String createdBy;
@@ -53,11 +58,6 @@ public class FoodCountItem {
     @Column(name = "VERSION", nullable = false)
     @Version
     private Integer version;
-
-    @OnDeleteInverse(DeletePolicy.CASCADE)
-    @JoinColumn(name = "ORDER_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Order order;
 
     @DeletedBy
     @Column(name = "DELETED_BY")

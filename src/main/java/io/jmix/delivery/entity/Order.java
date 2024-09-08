@@ -38,6 +38,12 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private User client;
 
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @OnDelete(DeletePolicy.UNLINK)
+    @JoinColumn(name = "RESTAURANT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Restaurant restaurant;
+
     @CreatedBy
     @Column(name = "CREATED_BY")
     private String createdBy;
@@ -65,6 +71,14 @@ public class Order {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
 
     public User getClient() {
         return client;
