@@ -14,6 +14,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ import java.util.UUID;
         @Index(name = "IDX_FOOD_BELONGS_TO_RESTAURANT", columnList = "BELONGS_TO_RESTAURANT_ID")
 })
 @Entity
-public class Food {
+public class Food implements HasIconEntity{
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
@@ -65,8 +66,14 @@ public class Food {
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
 
+    @Override
     public byte[] getIcon() {
         return icon;
+    }
+
+    @Override
+    public String getIconName() {
+        return MessageFormat.format("{0}_{1}.png", id, name);
     }
 
     public void setIcon(byte[] icon) {

@@ -11,13 +11,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @JmixEntity
 @Table(name = "RESTAURANT")
 @Entity
-public class Restaurant {
+public class Restaurant implements HasIconEntity {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
@@ -116,6 +117,11 @@ public class Restaurant {
 
     public byte[] getIcon() {
         return icon;
+    }
+
+    @Override
+    public String getIconName() {
+        return MessageFormat.format("restaurant_{0}_{1}.png", id, name);
     }
 
     public void setIcon(byte[] icon) {
