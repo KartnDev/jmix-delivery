@@ -1,9 +1,6 @@
-package io.jmix.delivery.view.restaurant;
+package io.jmix.delivery.view.systemrestaurant;
 
-import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.IconRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.Route;
 import io.jmix.delivery.entity.Restaurant;
@@ -18,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @ViewDescriptor("restaurant-list-view.xml")
 @LookupComponent("restaurantsDataGrid")
 @DialogMode(width = "64em")
-public class RestaurantListView extends StandardListView<Restaurant> {
+public class SysRestaurantListView extends StandardListView<Restaurant> {
     @Autowired
     private UiComponentHelper uiComponentHelper;
 

@@ -1,4 +1,4 @@
-package io.jmix.delivery.view.restaurant;
+package io.jmix.delivery.view.systemrestaurant;
 
 import com.vaadin.flow.router.Route;
 import io.jmix.delivery.entity.Restaurant;
@@ -12,5 +12,5 @@ import io.jmix.flowui.view.ViewDescriptor;
 @ViewController("Restaurant.detail")
 @ViewDescriptor("restaurant-detail-view.xml")
 @EditedEntityContainer("restaurantDc")
-public class RestaurantDetailView extends StandardDetailView<Restaurant> {
+public class SysRestaurantDetailView extends StandardDetailView<Restaurant> {
 }
