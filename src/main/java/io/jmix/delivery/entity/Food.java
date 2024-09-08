@@ -32,6 +32,9 @@ public class Food {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "ICON")
+    private byte[] icon;
+
     @NotNull(message = "{msg://io.jmix.delivery.entity/Food.belongsToRestaurant.validation.NotNull}")
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "BELONGS_TO_RESTAURANT_ID")
@@ -61,6 +64,14 @@ public class Food {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public byte[] getIcon() {
+        return icon;
+    }
+
+    public void setIcon(byte[] icon) {
+        this.icon = icon;
+    }
 
     public OffsetDateTime getDeletedDate() {
         return deletedDate;
