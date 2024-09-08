@@ -3,7 +3,11 @@
       title="msg://orderchooserestaurantview.title">
     <data>
         <collection id="restaurantsDc" class="io.jmix.delivery.entity.Restaurant">
-            <loader id="restaurantsDl" />
+            <loader id="restaurantsDl" >
+                <query>
+                    <![CDATA[select e from Restaurant e]]>
+                </query>
+            </loader>
         </collection>
     </data>
     <facets>
