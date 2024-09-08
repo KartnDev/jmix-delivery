@@ -20,6 +20,7 @@
         <formLayout id="form" dataContainer="restaurantDc">
             <textField id="nameField" property="name"/>
             <fileUploadField id="iconField" clearButtonVisible="true" fileNameVisible="true" property="icon"/>
+            <textField id="descriptionField" property="description"/>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseBtn" action="saveAction"/>
