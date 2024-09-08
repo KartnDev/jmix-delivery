@@ -28,6 +28,9 @@ public class Restaurant implements HasIconEntity {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
     @Column(name = "ICON")
     private byte[] icon;
 
@@ -58,6 +61,14 @@ public class Restaurant implements HasIconEntity {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public OffsetDateTime getDeletedDate() {
         return deletedDate;
