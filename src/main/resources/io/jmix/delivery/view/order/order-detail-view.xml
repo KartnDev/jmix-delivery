@@ -7,7 +7,13 @@
     </actions>
     <data>
         <instance id="orderDc" class="io.jmix.delivery.entity.Order">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="foodItems" fetch="JOIN" fetchPlan="_base">
+                    <property name="food" fetch="JOIN" fetchPlan="_base"/>
+                </property>
+                <property name="client" fetch="JOIN" fetchPlan="_base"/>
+                <property name="restaurant" fetch="JOIN" fetchPlan="_base"/>
+            </fetchPlan>
             <loader id="orderDl"/>
             <collection id="orderFoodItemsDc" property="foodItems"/>
         </instance>
@@ -35,7 +41,7 @@
         </dataLoadCoordinator>
     </facets>
     <layout>
-        <hbox>
+        <hbox id="titleLayout">
             <avatar id="restaurantIcon"/>
             <h2 id="restaurantTitle"/>
         </hbox>

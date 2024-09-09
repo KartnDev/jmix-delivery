@@ -7,6 +7,7 @@
         <item view="OrderChooseRestaurantView"
               title="msg://io.jmix.delivery.view.order/startOrder.title"/>
         <item view="MyRestaurant.list" title="msg://io.jmix.delivery.view.restaurant/myRestaurantListView.title"/>
+        <item view="Order_.list" title="msg://io.jmix.delivery.view.order/orderListView.title"/>
     </menu>
 
 </menu-config>

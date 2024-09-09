@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://orderListView.title"
+      focusComponent="ordersDataGrid">
+    <data>
+        <collection id="ordersDc"
+                    class="io.jmix.delivery.entity.Order">
+            <fetchPlan extends="_base">
+                <property name="restaurant" fetch="JOIN" fetchPlan="_base"/>
+                <property name="foodItems" fetch="JOIN" fetchPlan="_base">
+                    <property name="food" fetch="JOIN" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="ordersDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Order_ e where e.client = :currentUser]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true">
+            <refresh loader="ordersDl">
+                <onViewEvent type="Ready"/>
+            </refresh>
+        </dataLoadCoordinator>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="ordersDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="showDetailsButton" icon="vaadin:eye" text="msg://showDetails" themeNames="primary"/>
+            <simplePagination id="pagination" dataLoader="ordersDl"/>
+        </hbox>
+        <dataGrid id="ordersDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="ordersDc"
+                  columnReorderingAllowed="true">
+            <columns resizable="true">
+                <column key="restaurant" header="msg://restaurantColumn.header"/>
+                <column property="createdDate"/>
+                <column key="status" header="msg://statusColumn.header"/>
+                <column key="items" header="msg://items.header"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

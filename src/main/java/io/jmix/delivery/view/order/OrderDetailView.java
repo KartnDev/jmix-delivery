@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -20,11 +21,18 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.InputStreamFactory;
 import com.vaadin.flow.server.StreamResource;
 import io.jmix.core.DataManager;
+import io.jmix.core.FetchPlans;
+import io.jmix.core.Messages;
+import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.delivery.entity.*;
 import io.jmix.delivery.helper.UiComponentHelper;
+import io.jmix.delivery.repository.OrderRepository;
+import io.jmix.delivery.service.OrderProcessService;
 import io.jmix.delivery.view.main.MainView;
 import io.jmix.flowui.Dialogs;
 import io.jmix.flowui.action.DialogAction;
+import io.jmix.flowui.component.splitlayout.JmixSplitLayout;
+import io.jmix.flowui.kit.action.ActionPerformedEvent;
 import io.jmix.flowui.model.*;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +40,19 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.ByteArrayInputStream;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static io.jmix.delivery.constants.OrderViewsPathConstants.*;
+import static io.jmix.delivery.entity.OrderStatus.*;
 
 @Route(value = "orders/:id", layout = MainView.class)
 @ViewController("OrderDetailView")
 @ViewDescriptor("order-detail-view.xml")
 public class OrderDetailView extends StandardView {
 
+    @Autowired
+    private OrderProcessService orderProcessService;
     @Autowired
     private Dialogs dialogs;
     @Autowired
@@ -75,6 +87,25 @@ public class OrderDetailView extends StandardView {
     private Html totalPriceContainer;
     @ViewComponent
     private H2 restaurantTitle;
+    @Autowired
+    private CurrentAuthentication currentAuthentication;
+    @Autowired
+    private OrderRepository orderRepository;
+    @ViewComponent
+    private JmixSplitLayout split;
+    @ViewComponent
+    private Div content;
+    @ViewComponent
+    private VerticalLayout orderDetailTab;
+    @Autowired
+    private FetchPlans fetchPlans;
+    @ViewComponent
+    private HorizontalLayout detailsActions;
+    @Autowired
+    private Messages messages;
+    @ViewComponent
+    private HorizontalLayout titleLayout;
+
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -82,17 +113,121 @@ public class OrderDetailView extends StandardView {
         String orderId = event.getRouteParameters().get(ORDER_ID_PATH_PARAM).orElse(NEW_ORDER_ID);
         if (NEW_ORDER_ID.equals(orderId)) {
             initNewOrderView(event);
+            initRestaurantFragment();
         } else {
-//            initHistoryOrderView(event);
+            initHistoryOrderView(orderId);
+            refreshTotalCount();
         }
-
-        initRestaurantFragment();
 
         super.beforeEnter(event);
     }
 
+    private void initHistoryOrderView(String orderId) {
+        var orderFetchPlan = fetchPlans.builder(Order.class)
+                .addFetchPlan("order-fetch-plan")
+                .build();
+        Order order = orderRepository.getById(UUID.fromString(orderId), orderFetchPlan);
+        orderDc.setItem(order);
+
+        content.remove(split);
+        content.add(orderDetailTab);
+
+        uiComponentHelper.addVirtualList(orderContainer, (CollectionContainer) orderFoodItemsDc,
+                (foodItem, listComponentContext) -> orderCountedFoodsItemUpdater((FoodCountItem) foodItem, listComponentContext));
+
+        initRestaurantFragment();
+        initOrderStatusBarge();
+        detailsActions.setVisible(false);
+    }
+
+    private void initOrderStatusBarge() {
+        var order = orderDc.getItem();
+
+        var statusMessageText = messages.getMessage(OrderStatus.class, "OrderStatus." + order.getStatus().name());
+
+        var badge = switch (order.getStatus()) {
+            case NEW -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge contrast");
+
+                var icon = new Icon(VaadinIcon.CROSS_CUTLERY);
+                icon.getElement().getThemeList().add("badged-icon contrast");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case ACCEPTED -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge contrast");
+
+                var icon = new Icon(VaadinIcon.CHECK);
+                icon.getElement().getThemeList().add("badged-icon contrast");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case ON_WAIT_RESTAURANT -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge normal");
+
+                var icon = new Icon(VaadinIcon.CLOCK);
+                icon.getElement().getThemeList().add("badged-icon normal");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case COOKING -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge normal");
+
+                var icon = new Icon(VaadinIcon.CUTLERY);
+                icon.getElement().getThemeList().add("badged-icon normal");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case READY -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge success");
+
+                var icon = new Icon(VaadinIcon.CHECK);
+                icon.getElement().getThemeList().add("badged-icon success");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+        };
+
+        titleLayout.add(badge);
+    }
+
     private void initRestaurantFragment() {
-        Restaurant restaurant = restaurantDc.getItem();
+        Restaurant restaurant = orderDc.getItem().getRestaurant();
 
         restaurantTitle.setText(restaurant.getName());
         restaurantDescription.add(new Html(messageBundle.formatMessage("restaurantDescriptionMessage", restaurant.getDescription())));
@@ -103,7 +238,9 @@ public class OrderDetailView extends StandardView {
     }
 
     private void initNewOrderView(BeforeEnterEvent event) {
-        orderDc.setItem(dataContext.create(Order.class));
+        var order = dataContext.create(Order.class);
+        order.setClient((User) currentAuthentication.getUser());
+        orderDc.setItem(order);
         QueryParameters queryParameters = event.getLocation().getQueryParameters();
         if (!queryParameters.getParameters().containsKey(RESTAURANT_ID_PATH_PARAM) &&
                 queryParameters.getParameters().get(RESTAURANT_ID_PATH_PARAM).size() != 1) {
@@ -116,6 +253,7 @@ public class OrderDetailView extends StandardView {
         restaurantDl.setParameter("restaurantId", restaurantId);
         restaurantDl.load();
 
+        orderDc.getItem().setRestaurant(restaurantDc.getItem());
 
         uiComponentHelper.addVirtualList(restaurantFoodContainer, restaurantFoodDc,
                 (HasIconEntity item, UiComponentHelper.ListComponentContext context) -> restaurantFoodItemUpdater(context, (Food) item));
@@ -233,4 +371,22 @@ public class OrderDetailView extends StandardView {
                         .withHandler(e -> close(StandardOutcome.DISCARD)))
                 .open();
     }
+
+    @Subscribe(target = Target.DATA_CONTEXT)
+    public void onPostSave(final DataContext.PostSaveEvent event) {
+        orderProcessService.startOrderProcess(orderDc.getItem());
+    }
+
+    @Subscribe("approveOrder")
+    public void onApproveOrder(final ActionPerformedEvent event) {
+        dataContext.save(true);
+        close(StandardOutcome.DISCARD);
+    }
+
+    @Subscribe("cancelOrder")
+    public void onCancelOrder(final ActionPerformedEvent event) {
+        close(StandardOutcome.DISCARD);
+    }
+
+
 }
