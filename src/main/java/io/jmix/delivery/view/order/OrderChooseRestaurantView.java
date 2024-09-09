@@ -34,6 +34,8 @@ public class OrderChooseRestaurantView extends StandardView {
     private CollectionContainer<Restaurant> restaurantsDc;
     @Autowired
     private UiComponentHelper uiComponentHelper;
+    @ViewComponent
+    private MessageBundle messageBundle;
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
@@ -53,7 +55,7 @@ public class OrderChooseRestaurantView extends StandardView {
         detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
         var details = new Details();
-        details.add(new Text(restaurant.getDescription()));
+        details.add(new Html(messageBundle.formatMessage("restaurantInformation", restaurant.getDescription())));
         details.setSummaryText("Information");
 
         componentContext.infoLayout().add(details);

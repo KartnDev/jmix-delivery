@@ -3,9 +3,11 @@ package io.jmix.delivery.view.order;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -15,6 +17,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.InputStreamFactory;
+import com.vaadin.flow.server.StreamResource;
 import io.jmix.core.DataManager;
 import io.jmix.delivery.entity.*;
 import io.jmix.delivery.helper.UiComponentHelper;
@@ -26,9 +30,9 @@ import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
+import java.io.ByteArrayInputStream;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 import static io.jmix.delivery.constants.OrderViewsPathConstants.*;
 
@@ -63,6 +67,14 @@ public class OrderDetailView extends StandardView {
     private CollectionPropertyContainer<FoodCountItem> orderFoodItemsDc;
     @ViewComponent
     private H3 orderTitle;
+    @ViewComponent
+    private H2 restaurantTitle;
+    @ViewComponent
+    private Div restaurantDescription;
+    @ViewComponent
+    private Avatar restaurantIcon;
+    @ViewComponent
+    private Html totalPriceContainer;
 
 
     @Override
@@ -75,7 +87,20 @@ public class OrderDetailView extends StandardView {
 //            initHistoryOrderView(event);
         }
 
+        initRestaurantFragment();
+
         super.beforeEnter(event);
+    }
+
+    private void initRestaurantFragment() {
+        Restaurant restaurant = restaurantDc.getItem();
+
+        restaurantTitle.setText(restaurant.getName());
+        restaurantDescription.add(new Html(messageBundle.formatMessage("restaurantDescriptionMessage", restaurant.getDescription())));
+        if (restaurant.getIconName() != null && restaurant.getIcon() != null) {
+            restaurantIcon.setImageResource(new StreamResource(restaurant.getIconName(),
+                    (InputStreamFactory) () -> new ByteArrayInputStream(restaurant.getIcon())));
+        }
     }
 
     private void initNewOrderView(BeforeEnterEvent event) {
@@ -94,20 +119,21 @@ public class OrderDetailView extends StandardView {
 
 
         uiComponentHelper.addVirtualList(restaurantFoodContainer, restaurantFoodDc,
-                (HasIconEntity item, UiComponentHelper.ListComponentContext context) -> menuItemsUpdater(context, (Food) item));
+                (HasIconEntity item, UiComponentHelper.ListComponentContext context) -> restaurantFoodItemUpdater(context, (Food) item));
         uiComponentHelper.addVirtualList(orderContainer, (CollectionContainer) orderFoodItemsDc,
-                (foodItem, listComponentContext) -> foodItemsUpdater((FoodCountItem) foodItem, listComponentContext));
+                (foodItem, listComponentContext) -> orderCountedFoodsItemUpdater((FoodCountItem) foodItem, listComponentContext));
     }
 
-    private void foodItemsUpdater(FoodCountItem item, UiComponentHelper.ListComponentContext componentContext) {
+    private void orderCountedFoodsItemUpdater(FoodCountItem item, UiComponentHelper.ListComponentContext componentContext) {
         var title = new Html(messageBundle.formatMessage("foodItemsHeader", item.getFood().getName(), item.getCount()));
 
         componentContext.infoLayout().add(title);
 
         var horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(new Text(item.getFood().getDescription()));
-        horizontalLayout.add(new Html(messageBundle.formatMessage("foodItemsDescriptionPrice", item.getFood().getPrice())));
-        horizontalLayout.add(new Html(messageBundle.formatMessage("foodItemsDescriptionCountedPrice", item.getCount() * item.getFood().getPrice())));
+        horizontalLayout.add(new Html(messageBundle.formatMessage("foodItemsPrice", item.getFood().getPrice())));
+        horizontalLayout.add(new Html(messageBundle.formatMessage("foodItemsQuantity", item.getCount())));
+        horizontalLayout.add(new Html(messageBundle.formatMessage("foodItemsCountedPrice", item.getCount() * item.getFood().getPrice())));
         horizontalLayout.setPadding(false);
         horizontalLayout.setMargin(false);
         horizontalLayout.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -115,13 +141,13 @@ public class OrderDetailView extends StandardView {
     }
 
 
-    private void menuItemsUpdater(UiComponentHelper.ListComponentContext componentContext,
-                                  Food item) {
-        componentContext.infoLayout().add(new Html(messageBundle.formatMessage("menusHeader", item.getName())));
+    private void restaurantFoodItemUpdater(UiComponentHelper.ListComponentContext componentContext,
+                                           Food item) {
+        componentContext.infoLayout().add(new Html(messageBundle.formatMessage("foodHeader", item.getName())));
 
         var horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(new Text(item.getDescription()));
-        horizontalLayout.add(new Html(messageBundle.formatMessage("menusPrice", item.getPrice())));
+        horizontalLayout.add(new Html(messageBundle.formatMessage("foodPrice", item.getPrice())));
         horizontalLayout.setPadding(false);
         horizontalLayout.setMargin(false);
         horizontalLayout.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -189,7 +215,7 @@ public class OrderDetailView extends StandardView {
                 .stream()
                 .mapToInt(item -> item.getCount() * item.getFood().getPrice())
                 .sum();
-        orderTitle.setText(messageBundle.formatMessage("OrderFormatted", totalPrice));
+        totalPriceContainer.setHtmlContent(messageBundle.formatMessage("orderFormatted", totalPrice));
     }
 
 

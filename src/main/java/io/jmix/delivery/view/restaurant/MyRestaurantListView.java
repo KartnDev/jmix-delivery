@@ -67,7 +67,7 @@ public class MyRestaurantListView extends StandardListView<Restaurant> {
         detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
         var details = new Details();
-        details.add(new Text(restaurant.getDescription()));
+        details.add(new Html(messageBundle.formatMessage("restaurantInformation", restaurant.getDescription())));
         details.setSummaryText(messages.getMessage("information"));
 
         componentContext.infoLayout().add(details);

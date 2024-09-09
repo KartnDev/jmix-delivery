@@ -35,7 +35,12 @@
         </dataLoadCoordinator>
     </facets>
     <layout>
-        <vbox id="readonlyContent" padding="false" margin="false" width="100%" visible="false"/>
+        <hbox>
+            <avatar id="restaurantIcon"/>
+            <h2 id="restaurantTitle"/>
+        </hbox>
+        <div id="restaurantDescription"/>
+
         <div id="content" width="100%">
             <split id="split" splitterPosition="50" orientation="HORIZONTAL" width="100%">
                 <vbox id="restaurantMenuDetailTab" width="100%">
@@ -49,6 +54,7 @@
                     <div id="orderContainer" width="100%">
                         <virtualList id="orderFoodList"/>
                     </div>
+                    <html id="totalPriceContainer" content="msg://totalPricePlaceholder"/>
                 </vbox>
             </split>
             <hbox id="detailsActions">

@@ -6,7 +6,9 @@
     <data>
         <collection id="restaurantsDc"
                     class="io.jmix.delivery.entity.Restaurant">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="owners" fetchPlan="_base"/>
+            </fetchPlan>
             <loader id="restaurantsDl" readOnly="true">
                 <query>
                     <![CDATA[select e from Restaurant e]]>
@@ -51,6 +53,7 @@
                 <column property="name"/>
                 <column key="icon"/>
                 <column property="description"/>
+                <column key="owners"/>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

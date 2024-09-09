@@ -104,6 +104,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
                 .withViewClass(FoodDetailView.class)
                 .newEntity()
                 .withInitializer(e -> e.setBelongsToRestaurant(getEditedEntity()))
+                .withParentDataContext(dataContext)
                 .withAfterCloseListener(closeEvent -> {
                     if (closeEvent.closedWith(StandardOutcome.SAVE)) {
                         foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
@@ -137,7 +138,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
             HorizontalLayout itemDetailLayout = new HorizontalLayout();
             itemDetailLayout.add(new Text(item.getDescription()));
             itemDetailLayout.add(new Html(
-                    messageBundle.formatMessage("foodListItemDescription", item.getPrice()))
+                    messageBundle.formatMessage("foodListItemPriceMessage", item.getPrice()))
             );
             itemDetailLayout.setPadding(false);
             itemDetailLayout.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -155,6 +156,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
             detailButton.addClickListener(e -> dialogWindows.detail(this, Food.class)
                     .withViewClass(FoodDetailView.class)
                     .editEntity(item)
+                    .withParentDataContext(dataContext)
                     .withAfterCloseListener(closeEvent -> {
                         if (closeEvent.closedWith(StandardOutcome.SAVE)) {
                             foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
