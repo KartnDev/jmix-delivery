@@ -31,19 +31,22 @@ public class MyRestaurantListView extends StandardListView<Restaurant> {
     @Autowired
     private CurrentAuthentication currentAuthentication;
     @Autowired
+    private Messages messages;
+    @Autowired
     private ViewNavigationSupport viewNavigationSupport;
     @Autowired
     private UiComponentHelper listComponents;
-    @Autowired
-    private Messages messages;
+
     @ViewComponent
     private MessageBundle messageBundle;
+
     @ViewComponent
     private CollectionLoader<Restaurant> restaurantsDl;
     @ViewComponent
-    private VerticalLayout restaurantsListContainer;
-    @ViewComponent
     private CollectionContainer<Restaurant> restaurantsDc;
+
+    @ViewComponent
+    private VerticalLayout restaurantsListContainer;
 
     @Subscribe
     public void onInit(final InitEvent event) {

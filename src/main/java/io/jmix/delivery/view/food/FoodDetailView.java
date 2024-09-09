@@ -21,6 +21,7 @@ import java.util.Objects;
 @ViewDescriptor("food-detail-view.xml")
 @EditedEntityContainer("foodDc")
 public class FoodDetailView extends StandardDetailView<Food> {
+
     @ViewComponent
     private Avatar itemAvatarIcon;
     @ViewComponent

@@ -41,41 +41,40 @@ import static io.jmix.delivery.constants.OrderViewsPathConstants.*;
 @ViewDescriptor("order-detail-view.xml")
 public class OrderDetailView extends StandardView {
 
-    @ViewComponent
-    private Div restaurantFoodContainer;
-    @ViewComponent
-    private Div orderContainer;
-    @ViewComponent
-    private MessageBundle messageBundle;
     @Autowired
     private Dialogs dialogs;
-    @ViewComponent
-    private InstanceContainer<Restaurant> restaurantDc;
-    @Autowired
-    private DataManager dataManager;
-    @ViewComponent
-    private InstanceLoader<Restaurant> restaurantDl;
     @Autowired
     private UiComponentHelper uiComponentHelper;
+
+
+    @ViewComponent
+    private MessageBundle messageBundle;
+    @ViewComponent
+    private DataContext dataContext;
+
+    @ViewComponent
+    private InstanceContainer<Restaurant> restaurantDc;
+    @ViewComponent
+    private InstanceLoader<Restaurant> restaurantDl;
     @ViewComponent
     private CollectionContainer<Food> restaurantFoodDc;
     @ViewComponent
     private InstanceContainer<Order> orderDc;
     @ViewComponent
-    private DataContext dataContext;
-    @ViewComponent
     private CollectionPropertyContainer<FoodCountItem> orderFoodItemsDc;
-    @ViewComponent
-    private H3 orderTitle;
-    @ViewComponent
-    private H2 restaurantTitle;
+
     @ViewComponent
     private Div restaurantDescription;
+    @ViewComponent
+    private Div restaurantFoodContainer;
+    @ViewComponent
+    private Div orderContainer;
     @ViewComponent
     private Avatar restaurantIcon;
     @ViewComponent
     private Html totalPriceContainer;
-
+    @ViewComponent
+    private H2 restaurantTitle;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {

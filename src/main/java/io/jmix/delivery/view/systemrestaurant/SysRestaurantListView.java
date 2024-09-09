@@ -1,11 +1,8 @@
 package io.jmix.delivery.view.systemrestaurant;
 
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.data.provider.DataKeyMapper;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.data.renderer.Rendering;
-import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.Route;
 import io.jmix.delivery.entity.Restaurant;
 import io.jmix.delivery.entity.User;
@@ -23,6 +20,7 @@ import java.util.stream.Collectors;
 @LookupComponent("restaurantsDataGrid")
 @DialogMode(width = "64em")
 public class SysRestaurantListView extends StandardListView<Restaurant> {
+
     @Autowired
     private UiComponentHelper uiComponentHelper;
 

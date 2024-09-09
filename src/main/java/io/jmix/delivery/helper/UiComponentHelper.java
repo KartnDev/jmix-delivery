@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.spring.annotation.UIScope;
 import io.jmix.delivery.entity.HasIconEntity;
 import io.jmix.flowui.data.items.ContainerDataProvider;
 import io.jmix.flowui.model.CollectionContainer;
@@ -18,7 +19,7 @@ import java.util.function.BiConsumer;
 
 import static com.vaadin.flow.server.PwaConfiguration.DEFAULT_ICON;
 
-
+@UIScope
 @Component
 public final class UiComponentHelper {
     private UiComponentHelper() {}

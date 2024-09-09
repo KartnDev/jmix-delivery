@@ -14,7 +14,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
