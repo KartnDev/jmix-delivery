@@ -45,6 +45,9 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private Restaurant restaurant;
 
+    @Column(name = "STATUS")
+    private String status = OrderStatus.NEW.getId();
+
     @CreatedBy
     @Column(name = "CREATED_BY")
     private String createdBy;
@@ -72,6 +75,14 @@ public class Order {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public OrderStatus getStatus() {
+        return status == null ? null : OrderStatus.fromId(status);
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status == null ? null : status.getId();
+    }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
