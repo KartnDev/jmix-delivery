@@ -9,11 +9,13 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -22,7 +24,7 @@ import java.util.UUID;
         @Index(name = "IDX_FOOD_BELONGS_TO_RESTAURANT", columnList = "BELONGS_TO_RESTAURANT_ID")
 })
 @Entity
-public class Food {
+public class Food implements HasIconEntity {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
@@ -31,6 +33,16 @@ public class Food {
     @InstanceName
     @Column(name = "NAME")
     private String name;
+
+    @Positive(message = "{msg://io.jmix.delivery.entity/Food.price.validation.Positive}")
+    @Column(name = "PRICE")
+    private Integer price;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "ICON")
+    private byte[] icon;
 
     @NotNull(message = "{msg://io.jmix.delivery.entity/Food.belongsToRestaurant.validation.NotNull}")
     @OnDeleteInverse(DeletePolicy.CASCADE)
@@ -61,6 +73,36 @@ public class Food {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public byte[] getIcon() {
+        return icon;
+    }
+
+    @Override
+    public String getIconName() {
+        return MessageFormat.format("{0}_{1}.png", id, name);
+    }
+
+    public void setIcon(byte[] icon) {
+        this.icon = icon;
+    }
 
     public OffsetDateTime getDeletedDate() {
         return deletedDate;

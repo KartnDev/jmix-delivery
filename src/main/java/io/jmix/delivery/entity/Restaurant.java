@@ -1,8 +1,10 @@
 package io.jmix.delivery.entity;
 
+import io.jmix.core.DeletePolicy;
 import io.jmix.core.annotation.DeletedBy;
 import io.jmix.core.annotation.DeletedDate;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.entity.annotation.OnDelete;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -11,13 +13,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.text.MessageFormat;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
 @Table(name = "RESTAURANT")
 @Entity
-public class Restaurant {
+public class Restaurant implements HasIconEntity {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
@@ -26,6 +30,16 @@ public class Restaurant {
     @InstanceName
     @Column(name = "NAME")
     private String name;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @OnDelete(DeletePolicy.UNLINK)
+    @JoinTable(name = "RESTAURANT_USER_LINK",
+            joinColumns = @JoinColumn(name = "RESTAURANT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    @ManyToMany
+    private List<User> owners;
 
     @Column(name = "ICON")
     private byte[] icon;
@@ -57,6 +71,22 @@ public class Restaurant {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public List<User> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(List<User> owners) {
+        this.owners = owners;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public OffsetDateTime getDeletedDate() {
         return deletedDate;
@@ -116,6 +146,11 @@ public class Restaurant {
 
     public byte[] getIcon() {
         return icon;
+    }
+
+    @Override
+    public String getIconName() {
+        return MessageFormat.format("restaurant_{0}_{1}.png", id, name);
     }
 
     public void setIcon(byte[] icon) {

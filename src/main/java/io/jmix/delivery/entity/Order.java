@@ -8,6 +8,7 @@ import io.jmix.core.entity.annotation.OnDelete;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
+import org.eclipse.persistence.indirection.IndirectList;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -18,7 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "ORDER_")
+@Table(name = "ORDER_", indexes = {
+        @Index(name = "IDX_ORDER__CLIENT", columnList = "CLIENT_ID")
+})
 @Entity(name = "Order_")
 public class Order {
     @JmixGeneratedValue
@@ -29,7 +32,21 @@ public class Order {
     @OnDeleteInverse(DeletePolicy.DENY)
     @OneToMany(mappedBy = "order")
     @OnDelete(DeletePolicy.CASCADE)
-    private List<FoodCountItem> foodItems;
+    private List<FoodCountItem> foodItems = new IndirectList<>();
+
+    @OnDelete(DeletePolicy.UNLINK)
+    @JoinColumn(name = "CLIENT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User client;
+
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @OnDelete(DeletePolicy.UNLINK)
+    @JoinColumn(name = "RESTAURANT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Restaurant restaurant;
+
+    @Column(name = "STATUS")
+    private String status = OrderStatus.NEW.getId();
 
     @CreatedBy
     @Column(name = "CREATED_BY")
@@ -58,6 +75,30 @@ public class Order {
     @DeletedDate
     @Column(name = "DELETED_DATE")
     private OffsetDateTime deletedDate;
+
+    public OrderStatus getStatus() {
+        return status == null ? null : OrderStatus.fromId(status);
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status == null ? null : status.getId();
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public User getClient() {
+        return client;
+    }
+
+    public void setClient(User client) {
+        this.client = client;
+    }
 
     public List<FoodCountItem> getFoodItems() {
         return foodItems;
