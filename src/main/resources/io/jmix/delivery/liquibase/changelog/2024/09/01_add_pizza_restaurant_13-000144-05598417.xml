@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1726174929977-1" author="kartondev (generated)">
+        <insert tableName="restaurant">
+
+            <column name="id" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="name" value="CUBA Pizza"/>
+            <column name="description" value="Jmix was CUBA so this is play of words"/>
+            <column name="icon"
+                    valueBlobFile="images/restaurant_pizza.png"/>
+
+            <column name="created_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="created_by" value="admin"/>
+            <column name="last_modified_by" value="admin"/>
+            <column name="last_modified_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="version" value="1"/>
+        </insert>
+
+        <insert tableName="RESTAURANT_USER_LINK">
+            <column name="RESTAURANT_ID" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="USER_ID" value="60885987-1b61-4247-94c7-dff348347f93"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
