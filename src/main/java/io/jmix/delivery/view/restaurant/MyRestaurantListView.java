@@ -62,8 +62,8 @@ public class MyRestaurantListView extends StandardListView<Restaurant> {
 
         var detailButton = new Button(new Icon(VaadinIcon.PENCIL));
         detailButton.setText(messages.getMessage("actions.Edit"));
-//        detailButton.addClickListener(e -> viewNavigationSupport.navigate(MyRestaurantDetailView.class,
-//                new RouteParameters("id", String.valueOf(restaurant.getId()))));
+        detailButton.addClickListener(e -> viewNavigationSupport.navigate(MyRestaurantDetailView.class,
+                new RouteParameters("id", String.valueOf(restaurant.getId()))));
         detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
         var details = new Details();

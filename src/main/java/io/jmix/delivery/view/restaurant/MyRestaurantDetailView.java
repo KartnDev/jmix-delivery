@@ -26,7 +26,7 @@ import io.jmix.core.Messages;
 import io.jmix.delivery.entity.Food;
 import io.jmix.delivery.entity.Restaurant;
 import io.jmix.delivery.helper.UiComponentHelper;
-import io.jmix.delivery.view.food.FoodDetailView;
+//import io.jmix.delivery.view.food.FoodDetailView;
 import io.jmix.delivery.view.main.MainView;
 import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.component.SupportsTypedValue;
@@ -100,16 +100,16 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
 
     @Subscribe(id = "addBtn", subject = "clickListener")
     public void onAddBtnClick(final ClickEvent<JmixButton> event) {
-        dialogWindows.detail(this, Food.class)
-                .withViewClass(FoodDetailView.class)
-                .newEntity()
-                .withInitializer(e -> e.setBelongsToRestaurant(getEditedEntity()))
-                .withAfterCloseListener(closeEvent -> {
-                    if (closeEvent.closedWith(StandardOutcome.SAVE)) {
-                        foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
-                    }
-                })
-                .open();
+//        dialogWindows.detail(this, Food.class)
+//                .withViewClass(FoodDetailView.class)
+//                .newEntity()
+//                .withInitializer(e -> e.setBelongsToRestaurant(getEditedEntity()))
+//                .withAfterCloseListener(closeEvent -> {
+//                    if (closeEvent.closedWith(StandardOutcome.SAVE)) {
+//                        foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
+//                    }
+//                })
+//                .open();
     }
 
     @Supply(to = "foodList", subject = "renderer")
@@ -137,7 +137,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
             HorizontalLayout itemDetailLayout = new HorizontalLayout();
             itemDetailLayout.add(new Text(item.getDescription()));
             itemDetailLayout.add(new Html(
-                    messageBundle.formatMessage("foodListItemDescription", item.getPrice()))
+                    messageBundle.formatMessage("foodListItemPriceMessage", item.getPrice()))
             );
             itemDetailLayout.setPadding(false);
             itemDetailLayout.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -152,15 +152,15 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
 
             Button detailButton = new Button(new Icon(VaadinIcon.PENCIL));
             detailButton.setText(messages.getMessage("actions.Edit"));
-            detailButton.addClickListener(e -> dialogWindows.detail(this, Food.class)
-                    .withViewClass(FoodDetailView.class)
-                    .editEntity(item)
-                    .withAfterCloseListener(closeEvent -> {
-                        if (closeEvent.closedWith(StandardOutcome.SAVE)) {
-                            foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
-                        }
-                    })
-                    .open());
+//            detailButton.addClickListener(e -> dialogWindows.detail(this, Food.class)
+//                    .withViewClass(FoodDetailView.class)
+//                    .editEntity(item)
+//                    .withAfterCloseListener(closeEvent -> {
+//                        if (closeEvent.closedWith(StandardOutcome.SAVE)) {
+//                            foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
+//                        }
+//                    })
+//                    .open());
             detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
             Button removeButton = new Button(new Icon(VaadinIcon.TRASH));
