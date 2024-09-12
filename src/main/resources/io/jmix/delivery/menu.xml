@@ -3,7 +3,7 @@
 
     <menu id="application" title="msg://io.jmix.delivery/menu.application.title" opened="true">
         <item view="User.list" title="msg://io.jmix.delivery.view.user/UserListView.title"/>
-        <item view="Restaurant.list" title="msg://io.jmix.delivery.view.restaurant/restaurantListView.title"/>
+        <item view="Restaurant.list" title="msg://io.jmix.delivery.view.systemrestaurant/restaurantListView.title"/>
     </menu>
 
 </menu-config>
