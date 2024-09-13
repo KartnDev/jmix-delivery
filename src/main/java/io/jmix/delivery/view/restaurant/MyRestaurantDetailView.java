@@ -7,15 +7,11 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.TabSheet;
-import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -25,13 +21,9 @@ import com.vaadin.flow.server.StreamResource;
 import io.jmix.core.Messages;
 import io.jmix.delivery.entity.Food;
 import io.jmix.delivery.entity.Restaurant;
-import io.jmix.delivery.helper.UiComponentHelper;
 import io.jmix.delivery.view.food.FoodDetailView;
 import io.jmix.delivery.view.main.MainView;
 import io.jmix.flowui.DialogWindows;
-import io.jmix.flowui.component.SupportsTypedValue;
-import io.jmix.flowui.component.tabsheet.JmixTabSheet;
-import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.component.upload.FileUploadField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.kit.component.upload.event.FileUploadFinishedEvent;
@@ -40,8 +32,6 @@ import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -53,22 +43,24 @@ import static io.jmix.delivery.constants.OrderViewsPathConstants.ORDER_ID_PATH_P
 @ViewDescriptor("my-restaurant-detail-view.xml")
 @EditedEntityContainer("restaurantDc")
 public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
-    @ViewComponent
-    private MessageBundle messageBundle;
+
     @Autowired
     private Messages messages;
     @Autowired
     private DialogWindows dialogWindows;
-    @ViewComponent
-    private CollectionContainer<Object> foodDc;
+
     @ViewComponent
     private DataContext dataContext;
     @ViewComponent
-    private CollectionLoader<Food> foodDl;
-    @ViewComponent
-    private InstanceContainer<Restaurant> restaurantDc;
+    private MessageBundle messageBundle;
+
     @ViewComponent
     private InstanceLoader<Restaurant> restaurantDl;
+    @ViewComponent
+    private CollectionLoader<Food> foodDl;
+    @ViewComponent
+    private CollectionContainer<Object> foodDc;
+
     @ViewComponent
     private Avatar restaurantAvatarIcon;
     @ViewComponent
@@ -91,7 +83,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
     }
 
     private void updateIconField() {
-        if(getEditedEntity().getIcon() != null && getEditedEntity().getIconName() != null) {
+        if (getEditedEntity().getIcon() != null && getEditedEntity().getIconName() != null) {
             restaurantAvatarIconUpload.setValue(getEditedEntity().getIcon());
             restaurantAvatarIcon.setImageResource(new StreamResource(Objects.requireNonNull(getEditedEntity().getIconName()),
                     (InputStreamFactory) () -> new ByteArrayInputStream(Objects.requireNonNull(getEditedEntity().getIcon()))));
@@ -104,6 +96,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
                 .withViewClass(FoodDetailView.class)
                 .newEntity()
                 .withInitializer(e -> e.setBelongsToRestaurant(getEditedEntity()))
+                .withParentDataContext(dataContext)
                 .withAfterCloseListener(closeEvent -> {
                     if (closeEvent.closedWith(StandardOutcome.SAVE)) {
                         foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());
@@ -155,6 +148,7 @@ public class MyRestaurantDetailView extends StandardDetailView<Restaurant> {
             detailButton.addClickListener(e -> dialogWindows.detail(this, Food.class)
                     .withViewClass(FoodDetailView.class)
                     .editEntity(item)
+                    .withParentDataContext(dataContext)
                     .withAfterCloseListener(closeEvent -> {
                         if (closeEvent.closedWith(StandardOutcome.SAVE)) {
                             foodDc.replaceItem(closeEvent.getSource().getView().getEditedEntity());

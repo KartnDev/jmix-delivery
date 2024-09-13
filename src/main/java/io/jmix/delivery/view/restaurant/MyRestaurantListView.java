@@ -31,19 +31,22 @@ public class MyRestaurantListView extends StandardListView<Restaurant> {
     @Autowired
     private CurrentAuthentication currentAuthentication;
     @Autowired
+    private Messages messages;
+    @Autowired
     private ViewNavigationSupport viewNavigationSupport;
     @Autowired
     private UiComponentHelper listComponents;
-    @Autowired
-    private Messages messages;
+
     @ViewComponent
     private MessageBundle messageBundle;
+
     @ViewComponent
     private CollectionLoader<Restaurant> restaurantsDl;
     @ViewComponent
-    private VerticalLayout restaurantsListContainer;
-    @ViewComponent
     private CollectionContainer<Restaurant> restaurantsDc;
+
+    @ViewComponent
+    private VerticalLayout restaurantsListContainer;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -67,7 +70,7 @@ public class MyRestaurantListView extends StandardListView<Restaurant> {
         detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
         var details = new Details();
-        details.add(new Text(restaurant.getDescription()));
+        details.add(new Html(messageBundle.formatMessage("restaurantInformation", restaurant.getDescription())));
         details.setSummaryText(messages.getMessage("information"));
 
         componentContext.infoLayout().add(details);

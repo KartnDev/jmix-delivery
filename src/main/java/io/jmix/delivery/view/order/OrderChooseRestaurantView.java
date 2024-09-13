@@ -28,12 +28,15 @@ import static io.jmix.delivery.constants.OrderViewsPathConstants.*;
 public class OrderChooseRestaurantView extends StandardView {
     @Autowired
     private ViewNavigationSupport viewNavigationSupport;
-    @ViewComponent
-    private VerticalLayout restaurantsListContainer;
-    @ViewComponent
-    private CollectionContainer<Restaurant> restaurantsDc;
     @Autowired
     private UiComponentHelper uiComponentHelper;
+
+    @ViewComponent
+    private MessageBundle messageBundle;
+    @ViewComponent
+    private CollectionContainer<Restaurant> restaurantsDc;
+    @ViewComponent
+    private VerticalLayout restaurantsListContainer;
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
@@ -53,7 +56,7 @@ public class OrderChooseRestaurantView extends StandardView {
         detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
         var details = new Details();
-        details.add(new Text(restaurant.getDescription()));
+        details.add(new Html(messageBundle.formatMessage("restaurantInformation", restaurant.getDescription())));
         details.setSummaryText("Information");
 
         componentContext.infoLayout().add(details);
