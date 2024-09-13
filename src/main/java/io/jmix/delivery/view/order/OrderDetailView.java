@@ -26,8 +26,8 @@ import io.jmix.core.Messages;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.delivery.entity.*;
 import io.jmix.delivery.helper.UiComponentHelper;
-//import io.jmix.delivery.repository.OrderRepository;
-//import io.jmix.delivery.service.OrderProcessService;
+import io.jmix.delivery.repository.OrderRepository;
+import io.jmix.delivery.service.OrderProcessService;
 import io.jmix.delivery.view.main.MainView;
 import io.jmix.flowui.Dialogs;
 import io.jmix.flowui.action.DialogAction;
@@ -51,8 +51,8 @@ import static io.jmix.delivery.entity.OrderStatus.*;
 @ViewDescriptor("order-detail-view.xml")
 public class OrderDetailView extends StandardView {
 
-//    @Autowired
-//    private OrderProcessService orderProcessService;
+    @Autowired
+    private OrderProcessService orderProcessService;
     @Autowired
     private Dialogs dialogs;
     @Autowired
@@ -89,8 +89,8 @@ public class OrderDetailView extends StandardView {
     private H2 restaurantTitle;
     @Autowired
     private CurrentAuthentication currentAuthentication;
-//    @Autowired
-//    private OrderRepository orderRepository;
+    @Autowired
+    private OrderRepository orderRepository;
     @ViewComponent
     private JmixSplitLayout split;
     @ViewComponent
@@ -274,7 +274,7 @@ public class OrderDetailView extends StandardView {
 
     @Subscribe(target = Target.DATA_CONTEXT)
     public void onPostSave(final DataContext.PostSaveEvent event) {
-//        orderProcessService.startOrderProcess(orderDc.getItem());
+        orderProcessService.startOrderProcess(orderDc.getItem());
     }
 
     @Subscribe("cancelOrder")
