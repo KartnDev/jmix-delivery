@@ -141,5 +141,4 @@ public class OrderListView extends StandardListView<Order> {
                 new RouteParameters(ORDER_ID_PATH_PARAM, selectedOrder.getId().toString()),
                 QueryParameters.of(RESTAURANT_ID_PATH_PARAM, String.valueOf(selectedOrder.getRestaurant().getId())));
     }
-
 }
