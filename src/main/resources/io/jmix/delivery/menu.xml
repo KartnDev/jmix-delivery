@@ -5,6 +5,8 @@
         <item view="User.list" title="msg://io.jmix.delivery.view.user/UserListView.title"/>
         <item view="Restaurant.list" title="msg://io.jmix.delivery.view.systemrestaurant/restaurantListView.title"/>
         <item view="MyRestaurant.list" title="msg://io.jmix.delivery.view.restaurant/myRestaurantListView.title"/>
+        <item view="OrderChooseRestaurantView"
+              title="msg://io.jmix.delivery.view.order/startOrder.title"/>
     </menu>
 
 </menu-config>
