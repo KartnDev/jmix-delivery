@@ -1,0 +1,9 @@
+<fetchPlans xmlns="http://jmix.io/schema/core/fetch-plans">
+    <fetchPlan entity="Order_" name="order-fetch-plan" extends="_base">
+        <property name="foodItems" fetch="JOIN" fetchPlan="_base">
+            <property name="food" fetch="JOIN" fetchPlan="_base"/>
+        </property>
+        <property name="client" fetch="JOIN" fetchPlan="_base"/>
+        <property name="restaurant" fetch="JOIN" fetchPlan="_base"/>
+    </fetchPlan>
+</fetchPlans>

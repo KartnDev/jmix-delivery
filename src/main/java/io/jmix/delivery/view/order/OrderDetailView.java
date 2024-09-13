@@ -115,12 +115,116 @@ public class OrderDetailView extends StandardView {
             initNewOrderView(event);
             initRestaurantFragment();
         } else {
-//            initHistoryOrderView(event);
+            initHistoryOrderView(orderId);
+            refreshTotalCount();
         }
 
         super.beforeEnter(event);
     }
 
+    private void initHistoryOrderView(String orderId) {
+        var orderFetchPlan = fetchPlans.builder(Order.class)
+                .addFetchPlan("order-fetch-plan")
+                .build();
+        Order order = orderRepository.getById(UUID.fromString(orderId), orderFetchPlan);
+        orderDc.setItem(order);
+
+        content.remove(split);
+        content.add(orderDetailTab);
+
+        uiComponentHelper.addVirtualList(orderContainer, (CollectionContainer) orderFoodItemsDc,
+                (foodItem, listComponentContext) -> orderCountedFoodsItemUpdater((FoodCountItem) foodItem, listComponentContext));
+
+        initRestaurantFragment();
+        initOrderStatusBarge();
+        detailsActions.setVisible(false);
+    }
+
+    private void initOrderStatusBarge() {
+        var order = orderDc.getItem();
+
+        var statusMessageText = messages.getMessage(OrderStatus.class, "OrderStatus." + order.getStatus().name());
+
+        var badge = switch (order.getStatus()) {
+            case NEW -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge contrast");
+
+                var icon = new Icon(VaadinIcon.CROSS_CUTLERY);
+                icon.getElement().getThemeList().add("badged-icon contrast");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case ACCEPTED -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge contrast");
+
+                var icon = new Icon(VaadinIcon.CHECK);
+                icon.getElement().getThemeList().add("badged-icon contrast");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case ON_WAIT_RESTAURANT -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge normal");
+
+                var icon = new Icon(VaadinIcon.CLOCK);
+                icon.getElement().getThemeList().add("badged-icon normal");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case COOKING -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge normal");
+
+                var icon = new Icon(VaadinIcon.CUTLERY);
+                icon.getElement().getThemeList().add("badged-icon normal");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+            case READY -> {
+                var rootSpan = new Span();
+                rootSpan.getElement().getThemeList().add("badge success");
+
+                var icon = new Icon(VaadinIcon.CHECK);
+                icon.getElement().getThemeList().add("badged-icon success");
+                icon.getStyle().set("padding", "var(--lumo-space-xs)");
+
+                var textSpan = new Span();
+                textSpan.setText(statusMessageText);
+
+                rootSpan.add(icon, textSpan);
+
+                yield rootSpan;
+            }
+        };
+
+        titleLayout.add(badge);
+    }
 
     private void initRestaurantFragment() {
         Restaurant restaurant = orderDc.getItem().getRestaurant();
@@ -268,15 +372,15 @@ public class OrderDetailView extends StandardView {
                 .open();
     }
 
+    @Subscribe(target = Target.DATA_CONTEXT)
+    public void onPostSave(final DataContext.PostSaveEvent event) {
+        orderProcessService.startOrderProcess(orderDc.getItem());
+    }
+
     @Subscribe("approveOrder")
     public void onApproveOrder(final ActionPerformedEvent event) {
         dataContext.save(true);
         close(StandardOutcome.DISCARD);
-    }
-
-    @Subscribe(target = Target.DATA_CONTEXT)
-    public void onPostSave(final DataContext.PostSaveEvent event) {
-        orderProcessService.startOrderProcess(orderDc.getItem());
     }
 
     @Subscribe("cancelOrder")
