@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://orderDetailView.title">
+    <actions>
+        <action id="approveOrder" text="msg://approveOrder" icon="CHECK" actionVariant="PRIMARY"/>
+        <action id="cancelOrder" text="msg://cancelOrder" icon="BAN" actionVariant="DANGER"/>
+    </actions>
+    <data>
+        <instance id="orderDc" class="io.jmix.delivery.entity.Order">
+            <fetchPlan extends="_base">
+                <property name="foodItems" fetch="JOIN" fetchPlan="_base">
+                    <property name="food" fetch="JOIN" fetchPlan="_base"/>
+                </property>
+                <property name="client" fetch="JOIN" fetchPlan="_base"/>
+                <property name="restaurant" fetch="JOIN" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="orderDl"/>
+            <collection id="orderFoodItemsDc" property="foodItems"/>
+        </instance>
+
+        <instance id="restaurantDc" class="io.jmix.delivery.entity.Restaurant">
+            <loader id="restaurantDl">
+                <query>
+                    <![CDATA[select e from Restaurant e where e.id = :restaurantId]]>
+                </query>
+            </loader>
+        </instance>
+        <collection id="restaurantFoodDc" class="io.jmix.delivery.entity.Food">
+            <loader id="restaurantFoodDl">
+                <query>
+                    <![CDATA[select e from Food e where e.belongsToRestaurant = :container_restaurantDc]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true">
+            <refresh loader="restaurantFoodDl">
+                <onContainerItemChanged container="restaurantDc"/>
+            </refresh>
+        </dataLoadCoordinator>
+    </facets>
+    <layout>
+        <hbox id="titleLayout">
+            <avatar id="restaurantIcon"/>
+            <h2 id="restaurantTitle"/>
+        </hbox>
+        <div id="restaurantDescription"/>
+
+        <div id="content" width="100%">
+            <split id="split" splitterPosition="50" orientation="HORIZONTAL" width="100%">
+                <vbox id="restaurantMenuDetailTab" width="100%">
+                    <h3 id="meelTitle" text="msg://Meels"/>
+                    <div id="restaurantFoodContainer" width="100%">
+                        <virtualList id="restaurantFood"/>
+                    </div>
+                </vbox>
+                <vbox id="orderDetailTab" width="100%">
+                    <h3 id="orderTitle" text="msg://Order"/>
+                    <div id="orderContainer" width="100%">
+                        <virtualList id="orderFoodList"/>
+                    </div>
+                    <html id="totalPriceContainer" content="msg://totalPricePlaceholder"/>
+                </vbox>
+            </split>
+            <hbox id="detailsActions">
+                <button id="approveButton" action="approveOrder"/>
+                <button id="cancelButton" action="cancelOrder"/>
+            </hbox>
+        </div>
+    </layout>
+</view>

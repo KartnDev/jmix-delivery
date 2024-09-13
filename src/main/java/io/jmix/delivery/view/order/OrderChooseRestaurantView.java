@@ -47,9 +47,9 @@ public class OrderChooseRestaurantView extends StandardView {
 
         var detailButton = new Button(new Icon(VaadinIcon.EXIT_O));
         detailButton.setText("Order here");
-//        detailButton.addClickListener(e -> viewNavigationSupport.navigate(OrderDetailView.class,
-//                new RouteParameters(ORDER_ID_PATH_PARAM, NEW_ORDER_ID),
-//                QueryParameters.of(RESTAURANT_ID_PATH_PARAM, String.valueOf(restaurant.getId()))));
+        detailButton.addClickListener(e -> viewNavigationSupport.navigate(OrderDetailView.class,
+                new RouteParameters(ORDER_ID_PATH_PARAM, NEW_ORDER_ID),
+                QueryParameters.of(RESTAURANT_ID_PATH_PARAM, String.valueOf(restaurant.getId()))));
         detailButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 
         var details = new Details();
