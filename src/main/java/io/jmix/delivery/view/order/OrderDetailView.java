@@ -134,7 +134,9 @@ public class OrderDetailView extends StandardView {
     }
 
     private void initNewOrderView(BeforeEnterEvent event) {
-        orderDc.setItem(dataContext.create(Order.class));
+        var order = dataContext.create(Order.class);
+        order.setClient((User) currentAuthentication.getUser());
+        orderDc.setItem(order);
         QueryParameters queryParameters = event.getLocation().getQueryParameters();
         if (!queryParameters.getParameters().containsKey(RESTAURANT_ID_PATH_PARAM) &&
                 queryParameters.getParameters().get(RESTAURANT_ID_PATH_PARAM).size() != 1) {
