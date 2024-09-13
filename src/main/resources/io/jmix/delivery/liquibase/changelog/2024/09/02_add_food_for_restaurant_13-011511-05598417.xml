@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1726179335760-1" author="kartondev" >
+
+        <insert tableName="FOOD">
+
+            <column name="id" value="83494342-a16a-0c05-67a9-bd8d7f1114c3"/>
+            <column name="price" value="14"/>
+            <column name="name" value="Chilli piece"/>
+            <column name="description" value="Hot one piece"/>
+            <column name="belongs_to_restaurant_id" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="icon" valueBlobFile="images/food_pizza_pepperoni_hot.jpg"/>
+
+            <column name="created_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="created_by" value="admin"/>
+            <column name="last_modified_by" value="admin"/>
+            <column name="last_modified_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+        </insert>
+
+        <insert tableName="FOOD">
+
+            <column name="id" value="96204e34-bc93-51fd-4e13-ec3c112ed745"/>
+            <column name="price" value="55"/>
+            <column name="name" value="Mega pizza"/>
+            <column name="description" value="1kg pizza"/>
+            <column name="belongs_to_restaurant_id" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="icon" valueBlobFile="images/food_pizza_pepperoni_megapizza.jpeg"/>
+
+            <column name="created_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="created_by" value="admin"/>
+            <column name="last_modified_by" value="admin"/>
+            <column name="last_modified_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+        </insert>
+
+        <insert tableName="FOOD">
+
+            <column name="id" value="21204e34-bc93-51fd-4e13-ec3c112ed745"/>
+            <column name="price" value="67"/>
+            <column name="name" value="Super-pepperoni"/>
+            <column name="description" value="1.5kg pepperoni"/>
+            <column name="belongs_to_restaurant_id" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="icon" valueBlobFile="images/food_pizza_pepperoni_big.png"/>
+
+            <column name="created_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="created_by" value="admin"/>
+            <column name="last_modified_by" value="admin"/>
+            <column name="last_modified_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+        </insert>
+
+        <insert tableName="FOOD">
+
+            <column name="id" value="11204e34-bc93-51fd-4e13-ec3c112ed745"/>
+            <column name="price" value="17"/>
+            <column name="name" value="Hot pizza"/>
+            <column name="description" value="Hot piece pizza"/>
+            <column name="belongs_to_restaurant_id" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="icon" valueBlobFile="images/food_pizza_pepperoni_hot.jpg"/>
+
+            <column name="created_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="created_by" value="admin"/>
+            <column name="last_modified_by" value="admin"/>
+            <column name="last_modified_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+        </insert>
+
+        <insert tableName="FOOD">
+
+            <column name="id" value="51204e34-bc93-51fd-4e13-ec3c112ed745"/>
+            <column name="price" value="12"/>
+            <column name="name" value="Pepperoni piece"/>
+            <column name="description" value="Pepperoni pizza piece"/>
+            <column name="belongs_to_restaurant_id" value="d0983374-0796-4d67-15fd-d950884f8b01"/>
+            <column name="icon" valueBlobFile="images/food_pizza_piece_pepperoni.png"/>
+
+            <column name="created_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+            <column name="created_by" value="admin"/>
+            <column name="last_modified_by" value="admin"/>
+            <column name="last_modified_date" valueDate="2024-09-13T00:00:20.089+03:00"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

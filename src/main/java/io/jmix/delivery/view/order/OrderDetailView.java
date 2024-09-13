@@ -352,7 +352,7 @@ public class OrderDetailView extends StandardView {
                 .stream()
                 .mapToInt(item -> item.getCount() * item.getFood().getPrice())
                 .sum();
-        totalPriceContainer.setHtmlContent(messageBundle.formatMessage("orderFormatted", totalPrice));
+        totalPriceContainer.setHtmlContent(messageBundle.formatMessage("orderTotalPriceFormatted", totalPrice));
     }
 
 
@@ -387,6 +387,4 @@ public class OrderDetailView extends StandardView {
     public void onCancelOrder(final ActionPerformedEvent event) {
         close(StandardOutcome.DISCARD);
     }
-
-
 }
