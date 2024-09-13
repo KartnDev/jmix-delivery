@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:jmix="http://jmix.io/schema/bpm/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  <process id="order-process" name="Order process" isExecutable="true">
+    <startEvent id="startEvent1">
+      <outgoing>Flow_17vhn9l</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_17vhn9l" sourceRef="startEvent1" targetRef="Activity_0sessws" />
+    <serviceTask id="Activity_0sessws" name="Accept order" flowable:async="true" flowable:expression="${acceptOrderStep.execute(execution)}" jmix:taskType="springBean" jmix:beanName="acceptOrderStep">
+      <extensionElements>
+        <jmix:springBean beanName="acceptOrderStep" methodName="execute">
+          <jmix:methodParam name="execution" type="org.flowable.engine.delegate.DelegateExecution" isVariable="true">execution</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>Flow_17vhn9l</incoming>
+      <outgoing>Flow_16182bz</outgoing>
+    </serviceTask>
+    <userTask id="Activity_1q6kxr6" name="Restaurant acceptance" flowable:candidateUsers="${restaurantCandidatesProvider.getUserCandidatesForOrderByExecution(execution)}" jmix:assigneeSource="expression" jmix:candidateUsersSource="userListProvider" jmix:candidateUsersValue="restaurantCandidatesProvider">
+      <extensionElements>
+        <jmix:formData type="no-form" />
+        <jmix:springBean beanName="restaurantCandidatesProvider" methodName="getUserCandidatesForOrderByExecution">
+          <jmix:methodParam name="execution" type="org.flowable.engine.delegate.DelegateExecution" isVariable="true">execution</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>Flow_04ea06s</incoming>
+      <outgoing>Flow_0sc8iae</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_0sc8iae" sourceRef="Activity_1q6kxr6" targetRef="Activity_0u01uey">
+      <extensionElements>
+        <jmix:conditionDetails conditionSource="userTaskOutcome" />
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_13q2h9m" sourceRef="Activity_0u01uey" targetRef="Activity_0b2ayvb" />
+    <serviceTask id="Activity_0u01uey" name="Handle cooking" flowable:async="true" flowable:expression="${handleCookingStep.execute(execution)}" jmix:taskType="springBean" jmix:beanName="handleCookingStep">
+      <extensionElements>
+        <jmix:springBean beanName="handleCookingStep" methodName="execute">
+          <jmix:methodParam name="execution" type="org.flowable.engine.delegate.DelegateExecution" isVariable="true">execution</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>Flow_0sc8iae</incoming>
+      <outgoing>Flow_13q2h9m</outgoing>
+    </serviceTask>
+    <userTask id="Activity_0b2ayvb" name="Cook done acceptence" flowable:candidateUsers="${restaurantCandidatesProvider.getUserCandidatesForOrderByExecution(execution)}" jmix:candidateUsersSource="userListProvider" jmix:candidateUsersValue="restaurantCandidatesProvider">
+      <extensionElements>
+        <jmix:formData type="no-form" />
+        <jmix:springBean beanName="restaurantCandidatesProvider" methodName="getUserCandidatesForOrderByExecution">
+          <jmix:methodParam name="execution" type="org.flowable.engine.delegate.DelegateExecution" isVariable="true">execution</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>Flow_13q2h9m</incoming>
+      <outgoing>Flow_1x4hdxy</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_1x4hdxy" sourceRef="Activity_0b2ayvb" targetRef="Activity_096eve8">
+      <extensionElements>
+        <jmix:conditionDetails conditionSource="userTaskOutcome" />
+      </extensionElements>
+    </sequenceFlow>
+    <serviceTask id="Activity_096eve8" name="Notify client" flowable:async="true" flowable:expression="${orderDoneStep.execute(execution)}" jmix:taskType="springBean" jmix:beanName="orderDoneStep">
+      <extensionElements>
+        <jmix:springBean beanName="orderDoneStep" methodName="execute">
+          <jmix:methodParam name="execution" type="org.flowable.engine.delegate.DelegateExecution" isVariable="true">execution</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>Flow_1x4hdxy</incoming>
+      <outgoing>Flow_0tkayz6</outgoing>
+    </serviceTask>
+    <endEvent id="Event_0ks7day">
+      <incoming>Flow_0tkayz6</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_0tkayz6" sourceRef="Activity_096eve8" targetRef="Event_0ks7day" />
+    <sequenceFlow id="Flow_16182bz" sourceRef="Activity_0sessws" targetRef="Activity_0ugo3um" />
+    <sequenceFlow id="Flow_04ea06s" sourceRef="Activity_0ugo3um" targetRef="Activity_1q6kxr6" />
+    <serviceTask id="Activity_0ugo3um" name="Wait for restaurant" flowable:expression="${waitRestaurantStep.execute(execution)}" jmix:taskType="springBean" jmix:beanName="waitRestaurantStep">
+      <extensionElements>
+        <jmix:springBean beanName="waitRestaurantStep" methodName="execute">
+          <jmix:methodParam name="execution" type="org.flowable.engine.delegate.DelegateExecution" isVariable="true">execution</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>Flow_16182bz</incoming>
+      <outgoing>Flow_04ea06s</outgoing>
+    </serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane id="BPMNPlane_process" bpmnElement="order-process">
+      <bpmndi:BPMNShape id="BPMNShape_startEvent1" bpmnElement="startEvent1">
+        <omgdc:Bounds x="2" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06ci98z_di" bpmnElement="Activity_0sessws">
+        <omgdc:Bounds x="100" y="128" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04u0stx_di" bpmnElement="Activity_1q6kxr6">
+        <omgdc:Bounds x="410" y="128" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0439i5r_di" bpmnElement="Activity_0u01uey">
+        <omgdc:Bounds x="560" y="128" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0q7biky_di" bpmnElement="Activity_0b2ayvb">
+        <omgdc:Bounds x="720" y="128" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s5aw77_di" bpmnElement="Activity_096eve8">
+        <omgdc:Bounds x="880" y="128" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ks7day_di" bpmnElement="Event_0ks7day">
+        <omgdc:Bounds x="1042" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0snlgab_di" bpmnElement="Activity_0ugo3um">
+        <omgdc:Bounds x="250" y="128" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17vhn9l_di" bpmnElement="Flow_17vhn9l">
+        <omgdi:waypoint x="38" y="168" />
+        <omgdi:waypoint x="100" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sc8iae_di" bpmnElement="Flow_0sc8iae">
+        <omgdi:waypoint x="510" y="168" />
+        <omgdi:waypoint x="560" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13q2h9m_di" bpmnElement="Flow_13q2h9m">
+        <omgdi:waypoint x="660" y="168" />
+        <omgdi:waypoint x="720" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x4hdxy_di" bpmnElement="Flow_1x4hdxy">
+        <omgdi:waypoint x="820" y="168" />
+        <omgdi:waypoint x="880" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tkayz6_di" bpmnElement="Flow_0tkayz6">
+        <omgdi:waypoint x="980" y="168" />
+        <omgdi:waypoint x="1042" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16182bz_di" bpmnElement="Flow_16182bz">
+        <omgdi:waypoint x="200" y="168" />
+        <omgdi:waypoint x="250" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04ea06s_di" bpmnElement="Flow_04ea06s">
+        <omgdi:waypoint x="350" y="168" />
+        <omgdi:waypoint x="410" y="168" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
